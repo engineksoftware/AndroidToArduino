@@ -32,6 +32,9 @@ public class MainActivity extends FragmentActivity {
 
     }
 
+    /*
+     * Starts the fragment once Bluetooth has been turned on.
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 0) {
@@ -41,11 +44,18 @@ public class MainActivity extends FragmentActivity {
         }
     }
 
+    /*
+     * Gets around an error that caused the App to crashed due to an
+     * IllegalStateException: Can not perform this action after onSaveInstanceState
+     */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         //No call for super(). Bug on API Level > 11.
     }
 
+    /*
+     * Starts the first fragments that allows you to connect to the HC-06 module.
+     */
     public void startFrag(){
         DeviceFragment dFrag = new DeviceFragment();
         getSupportFragmentManager().beginTransaction()
