@@ -28,8 +28,6 @@ public class DeviceFragment extends ListFragment {
     ArrayAdapter<String> adapter;
     BluetoothAdapter btAdapter;
     Set<BluetoothDevice> pairedDevices;
-    String TAG = "Main";
-    Bluetooth bt;
 
 
     @Override
@@ -45,57 +43,20 @@ public class DeviceFragment extends ListFragment {
         pairedDevices = btAdapter.getBondedDevices();
         btStrings = new ArrayList<String>();
 
-        for(BluetoothDevice bt: pairedDevices){
+        for (BluetoothDevice bt : pairedDevices) {
             btStrings.add(bt.getName());
         }
 
-        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1,btStrings);
+        adapter = new ArrayAdapter<String>(getActivity(), android.R.layout.simple_list_item_1, btStrings);
         setListAdapter(adapter);
         getListView().setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                bt = new Bluetooth(getActivity(), handler);
-                connectService(getListView().getItemAtPosition(position).toString());
+                ((MainActivity)getActivity()).connectService();
             }
         });
+
     }
 
-    public void connectService(String name){
-        try {
-            BluetoothAdapter bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            if (bluetoothAdapter.isEnabled()) {
-                bt.start();
-                bt.connectDevice(name);
-                Log.d(TAG, "Btservice started - listening");
-            } else {
-                Log.w(TAG, "Btservice started - bluetooth is not enabled");
-            }
-        } catch(Exception e){
-            Log.e(TAG, "Unable to start bt ",e);
-        }
-    }
-
-    public final Handler handler = new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            switch (msg.what) {
-                case Bluetooth.MESSAGE_STATE_CHANGE:
-                    Log.d(TAG, "MESSAGE_STATE_CHANGE: " + msg.arg1);
-                    break;
-                case Bluetooth.MESSAGE_WRITE:
-                    Log.d(TAG, "MESSAGE_WRITE ");
-                    break;
-                case Bluetooth.MESSAGE_READ:
-                    Log.d(TAG, "MESSAGE_READ ");
-                    break;
-                case Bluetooth.MESSAGE_DEVICE_NAME:
-                    Log.d(TAG, "MESSAGE_DEVICE_NAME "+msg);
-                    break;
-                case Bluetooth.MESSAGE_TOAST:
-                    Log.d(TAG, "MESSAGE_TOAST "+msg);
-                    break;
-            }
-        }
-    };
 
 }
